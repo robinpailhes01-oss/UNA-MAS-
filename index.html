@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Una Más — Réserver une table</title>
   <meta name="description" content="Réservez votre table chez Una Más, cocktails & tapas au cœur du port de Carnon. Réservation en moins de 30 secondes.">
-  <meta name="theme-color" content="#1B2B22">
+  <meta name="theme-color" content="#FFFFFF">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232E4A3A'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' font-weight='600' fill='%23F3EFE6' text-anchor='middle'%3EUM%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2377926E'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' font-weight='600' fill='%23F3EFE6' text-anchor='middle'%3EUM%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 
@@ -20,27 +20,24 @@
   <!-- ============ HEADER ============ -->
   <header class="topbar" id="topbar">
     <a class="brand" href="#accueil" aria-label="Una Más — Accueil">
-      <span class="brand__word">UNA<br>MÁS</span>
-      <span class="brand__sub">Cocktails &amp; Food</span>
+      <span class="brand__logo" role="img" aria-label="Una Más — cocktails &amp; food"></span>
     </a>
     <button class="iconbtn" id="menuOpen" aria-label="Ouvrir le menu" aria-controls="drawer" aria-expanded="false">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"/></svg>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"/></svg>
     </button>
   </header>
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="accueil">
-    <div class="hero__scene" aria-hidden="true">
-      <img class="hero__photo" src="assets/img/hero.jpg" alt="" onerror="this.remove()">
-      <svg class="palm palm--l" viewBox="0 0 200 300"><use href="#palm"/></svg>
-      <svg class="palm palm--r" viewBox="0 0 200 300"><use href="#palm"/></svg>
-    </div>
+    <figure class="hero__photo reveal" style="--d:.05s">
+      <img src="assets/img/hero.jpg" alt="La terrasse d'Una Más, entre palmiers, sur le port de Carnon" width="1195" height="692">
+    </figure>
     <div class="hero__content">
-      <h1 class="hero__title reveal" style="--d:.05s">Cocktails<br><span>Tapas &amp; Musique</span></h1>
-      <p class="hero__tag reveal" style="--d:.15s">Good drinks<br>Good people<br>Better days</p>
-      <a class="btn btn--primary btn--xl reveal" style="--d:.25s" href="#reservation" data-scroll>
+      <h1 class="hero__title reveal" style="--d:.15s">Cocktails, tapas<br>&amp; musique</h1>
+      <p class="hero__tag reveal" style="--d:.2s">Good drinks · Good people · Better days</p>
+      <a class="btn btn--primary btn--xl btn--full reveal" style="--d:.25s" href="#reservation" data-scroll>
         <span>Réserver une table</span>
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg>
       </a>
       <ul class="hero__pillars reveal" style="--d:.35s">
         <li><svg viewBox="0 0 24 24"><use href="#i-cocktail"/></svg><span>Cocktails<br>signature</span></li>
@@ -48,9 +45,6 @@
         <li><svg viewBox="0 0 24 24"><use href="#i-music"/></svg><span>Musique<br>live</span></li>
         <li><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg><span>Port de<br>Carnon</span></li>
       </ul>
-      <a class="hero__chevron" href="#reservation" data-scroll aria-label="Descendre vers la réservation">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"/></svg>
-      </a>
     </div>
   </section>
 
@@ -133,7 +127,6 @@
         <div class="prefcard" id="prefCard">
           <div class="prefcard__img" aria-hidden="true">
             <img src="assets/img/terrasse.jpg" alt="" onerror="this.remove()">
-            <svg class="palm" viewBox="0 0 200 300"><use href="#palm"/></svg>
           </div>
           <div class="prefcard__body">
             <svg viewBox="0 0 24 24" class="prefcard__icon"><use href="#i-sun"/></svg>
@@ -223,8 +216,7 @@
           <button type="button" class="btn btn--ghost" id="cancelBtn">Annuler</button>
         </div>
 
-        <p class="script" aria-hidden="true">Good drinks<br>Good people</p>
-        <p class="tiny">UNA MÁS • PORT DE CARNON</p>
+        <p class="motto">Good drinks · Good people · Better days</p>
       </div>
 
     </form>
@@ -232,40 +224,35 @@
 
   <!-- ============ SOIRÉE / SPECIAL REQUESTS ============ -->
   <section class="soiree" id="soiree" aria-labelledby="soireeTitle">
-    <div class="soiree__scene" aria-hidden="true">
-      <img src="assets/img/soiree.jpg" alt="" onerror="this.remove()">
-    </div>
+    <figure class="soiree__photo">
+      <img src="assets/img/soiree.jpg" alt="Una Más un soir d'été, enseigne lumineuse et terrasse pleine" width="1043" height="902" loading="lazy">
+    </figure>
     <div class="soiree__content">
-      <h2 class="h2 h2--light" id="soireeTitle">Une soirée<br>à votre image</h2>
-      <p class="lead lead--light">Anniversaire, afterwork, groupe&nbsp;? Faites-nous part de vos demandes, on s'occupe du reste.</p>
-      <a class="btn btn--light btn--full" href="#reservation" data-scroll data-special="">
-        <svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-chat"/></svg>
-        <span>Demande spéciale</span>
-        <svg class="btn__arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg>
-      </a>
+      <p class="eyebrow">Événements</p>
+      <h2 class="h2" id="soireeTitle">Une soirée<br>à votre image</h2>
+      <p class="lead">Anniversaire, afterwork, groupe&nbsp;? Faites-nous part de vos demandes, on s'occupe du reste.</p>
       <div class="occasions">
         <a href="#reservation" data-scroll data-special="Anniversaire"><svg viewBox="0 0 24 24"><use href="#i-cake"/></svg><span>Anniversaire</span></a>
         <a href="#reservation" data-scroll data-special="Groupe"><svg viewBox="0 0 24 24"><use href="#i-cheers"/></svg><span>Groupe</span></a>
         <a href="#reservation" data-scroll data-special="Événement privé"><svg viewBox="0 0 24 24"><use href="#i-music"/></svg><span>Événement privé</span></a>
       </div>
+      <a class="btn btn--outline btn--full" href="#reservation" data-scroll data-special="">
+        <svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-chat"/></svg>
+        <span>Autre demande spéciale</span>
+      </a>
     </div>
-  </section>
-
-  <section class="neon" aria-hidden="true">
-    <img src="assets/img/neon.jpg" alt="" onerror="this.remove()">
-    <p class="neon__text">Good drinks<br>Good people<br>Better days</p>
   </section>
 
   <!-- ============ FOOTER / NOUS TROUVER ============ -->
   <footer class="foot" id="trouver">
     <div class="brand brand--foot">
-      <span class="brand__word">UNA<br>MÁS</span>
-      <span class="brand__sub">Cocktails &amp; Food</span>
+      <span class="brand__logo" role="img" aria-label="Una Más — cocktails &amp; food"></span>
     </div>
     <address class="foot__addr">
       Port de Carnon<br>
       Place Saint Marc, 34130 Mauguio
     </address>
+    <p class="foot__hours">Ouvert du lundi au dimanche</p>
     <div class="foot__links">
       <a class="btn btn--outline-light" id="phoneLink" href="tel:+33467543649"><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-phone"/></svg><span>04 67 54 36 49</span></a>
       <a class="btn btn--outline-light" id="mapsLink" href="https://www.google.com/maps/search/?api=1&query=Una+M%C3%A1s+Place+Saint+Marc+34130+Mauguio" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-pin"/></svg><span>Itinéraire</span></a>
@@ -283,8 +270,7 @@
   <nav class="drawer__panel" aria-label="Menu principal">
     <div class="drawer__top">
       <div class="brand brand--drawer">
-        <span class="brand__word">UNA<br>MÁS</span>
-        <span class="brand__sub">Cocktails &amp; Food</span>
+        <span class="brand__logo" role="img" aria-label="Una Más — cocktails &amp; food"></span>
       </div>
       <button class="iconbtn iconbtn--light" data-close aria-label="Fermer le menu">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l10 10M14 4L4 14"/></svg>
@@ -322,7 +308,6 @@
 <!-- ============ ICON SPRITE ============ -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <g id="palm" fill="currentColor"></g>
     <symbol id="i-cocktail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14l-7 8-7-8zM12 12v7M8 19h8M9 4l3 3.5L15 4"/></symbol>
     <symbol id="i-tapas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7M9 3v7M5 3v7c0 1.5 1 2.5 2 2.5S9 11.5 9 10M7 12.5V21M16 3c-2 0-3 3-3 6s1 4 2 4v8M15 13c1 0 2-1.5 2-4s-1-6-1-6"/></symbol>
     <symbol id="i-music" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></symbol>

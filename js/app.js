@@ -12,7 +12,7 @@
     phoneIntl: "+33467543649",
     address: "Place Saint Marc, 34130 Mauguio",
     place: "Port de Carnon",
-    instagram: "",                 // ex : "https://www.instagram.com/unamas.carnon"
+    instagram: "https://www.instagram.com/unamas_cocktailbar",
     cocktailsMenuUrl: "",          // URL PDF ou page de la carte des cocktails
     tapasMenuUrl: "",              // URL PDF ou page des tapas
     // Envoi de la réservation : URL qui reçoit un POST JSON (Formspree, Make, n8n, Supabase Edge Function…)
@@ -161,8 +161,8 @@
       p.textContent = "Plus de créneau disponible ce jour-là. Choisissez une autre date ou appelez-nous.";
       wrap.appendChild(p);
     }
-    if (!state.time && slotAvailable(state.date, CONFIG.defaultSlot)) {
-      state.time = CONFIG.defaultSlot;
+    if (!state.time && any) {
+      state.time = slotAvailable(state.date, CONFIG.defaultSlot) ? CONFIG.defaultSlot : CONFIG.slots.find(t => slotAvailable(state.date, t));
       $$(".slot").forEach(s => s.setAttribute("aria-checked", String(s.textContent === state.time)));
     }
   }
@@ -353,46 +353,8 @@
     if (open) $(".drawer__nav a").focus();
   }
 
-  /* ---------- Palm frond (procedural silhouette, no image needed) ---------- */
-  function buildPalm() {
-    const g = $("#palm");
-    if (!g) return;
-    const P = t => { // quadratic stem from bottom to top
-      const x0 = 100, y0 = 300, cx = 118, cy = 150, x1 = 128, y1 = 20;
-      const x = (1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * cx + t * t * x1;
-      const y = (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * cy + t * t * y1;
-      const dx = 2 * (1 - t) * (cx - x0) + 2 * t * (x1 - cx);
-      const dy = 2 * (1 - t) * (cy - y0) + 2 * t * (y1 - cy);
-      const l = Math.hypot(dx, dy);
-      return { x, y, tx: dx / l, ty: dy / l };
-    };
-    let d = "M100 300 Q118 150 128 20 L131 21 Q121 150 104 300 Z";
-    const n = 26;
-    for (let i = 3; i <= n; i++) {
-      const t = i / n;
-      const p = P(t);
-      const len = 22 + 68 * Math.pow(Math.sin(Math.PI * Math.min(1, t * 1.05)), .7);
-      const w = 2.2 + 1.2 * Math.sin(Math.PI * t);
-      [1, -1].forEach(side => {
-        const ang = (38 + 18 * t) * Math.PI / 180;
-        const cos = Math.cos(ang), sin = Math.sin(ang);
-        const dirx = p.tx * cos - side * p.ty * sin;
-        const diry = p.ty * cos + side * p.tx * sin;
-        const nx = -diry, ny = dirx;
-        const tipx = p.x + dirx * len, tipy = p.y + diry * len + len * .18;
-        const c1x = p.x + dirx * len * .45 + nx * w, c1y = p.y + diry * len * .45 + ny * w;
-        const c2x = p.x + dirx * len * .45 - nx * w, c2y = p.y + diry * len * .45 - ny * w;
-        d += ` M${p.x.toFixed(1)} ${p.y.toFixed(1)} Q${c1x.toFixed(1)} ${c1y.toFixed(1)} ${tipx.toFixed(1)} ${tipy.toFixed(1)} Q${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p.x.toFixed(1)} ${p.y.toFixed(1)} Z`;
-      });
-    }
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute("d", d);
-    g.appendChild(path);
-  }
-
   /* ---------- Init ---------- */
   function init() {
-    buildPalm();
     $("#year").textContent = new Date().getFullYear();
     buildDates();
     setGuests(state.guests);

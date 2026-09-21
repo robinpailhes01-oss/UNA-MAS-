@@ -54,14 +54,19 @@ Tout se règle dans l'objet `CONFIG` en haut de `js/app.js` :
 }
 ```
 
+## Identité
+
+- Police unique : Manrope (Google Fonts)
+- Vert sauge du logo `#77926E` comme seul accent, fond blanc, footer et menu vert foncé
+- Logo : `assets/img/logo.png` est un masque alpha, embarqué en data URI dans `css/styles.css` (`--logo`) et recoloré en CSS. Pour le remplacer par le fichier source du restaurant, régénérer la data URI ou pointer `--logo` vers le fichier.
+
 ## Photos
 
-Les emplacements sont prévus, la page fonctionne sans (dégradés de marque + palmes en fallback). Déposer :
+Les photos actuelles sont extraites de captures du site unamas.fr (basse résolution). Les remplacer par les originaux, mêmes noms :
 
-- `assets/img/hero.jpg` — terrasse / ambiance (portrait, ≥ 1200 px de haut)
+- `assets/img/hero.jpg` — terrasse (4:3, ≥ 1200 px de large)
 - `assets/img/terrasse.jpg` — carte « Terrasse » à l'étape horaire (16:8)
-- `assets/img/soiree.jpg` — section « Une soirée à votre image »
-- `assets/img/neon.jpg` — bandeau néon « Good drinks Good people Better days »
+- `assets/img/soiree.jpg` — section « Une soirée à votre image » (4:3)
 
 ## Fonctionnalités
 
