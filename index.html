@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Una Más — Réserver une table</title>
+  <meta name="description" content="Réservez votre table chez Una Más, cocktails & tapas au cœur du port de Carnon. Réservation en moins de 30 secondes.">
+  <meta name="theme-color" content="#1B2B22">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232E4A3A'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' font-weight='600' fill='%23F3EFE6' text-anchor='middle'%3EUM%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="stage">
+<div class="app" id="app">
+
+  <!-- ============ HEADER ============ -->
+  <header class="topbar" id="topbar">
+    <a class="brand" href="#accueil" aria-label="Una Más — Accueil">
+      <span class="brand__word">UNA<br>MÁS</span>
+      <span class="brand__sub">Cocktails &amp; Food</span>
+    </a>
+    <button class="iconbtn" id="menuOpen" aria-label="Ouvrir le menu" aria-controls="drawer" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"/></svg>
+    </button>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="accueil">
+    <div class="hero__scene" aria-hidden="true">
+      <img class="hero__photo" src="assets/img/hero.jpg" alt="" onerror="this.remove()">
+      <svg class="palm palm--l" viewBox="0 0 200 300"><use href="#palm"/></svg>
+      <svg class="palm palm--r" viewBox="0 0 200 300"><use href="#palm"/></svg>
+    </div>
+    <div class="hero__content">
+      <h1 class="hero__title reveal" style="--d:.05s">Cocktails<br><span>Tapas &amp; Musique</span></h1>
+      <p class="hero__tag reveal" style="--d:.15s">Good drinks<br>Good people<br>Better days</p>
+      <a class="btn btn--primary btn--xl reveal" style="--d:.25s" href="#reservation" data-scroll>
+        <span>Réserver une table</span>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg>
+      </a>
+      <ul class="hero__pillars reveal" style="--d:.35s">
+        <li><svg viewBox="0 0 24 24"><use href="#i-cocktail"/></svg><span>Cocktails<br>signature</span></li>
+        <li><svg viewBox="0 0 24 24"><use href="#i-tapas"/></svg><span>Tapas<br>maison</span></li>
+        <li><svg viewBox="0 0 24 24"><use href="#i-music"/></svg><span>Musique<br>live</span></li>
+        <li><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg><span>Port de<br>Carnon</span></li>
+      </ul>
+      <a class="hero__chevron" href="#reservation" data-scroll aria-label="Descendre vers la réservation">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ RESERVATION ============ -->
+  <section class="booking" id="reservation" aria-labelledby="bookingTitle">
+
+    <div class="booking__head">
+      <p class="eyebrow">Réservation</p>
+      <h2 class="h2" id="bookingTitle">Réservez<br>votre table</h2>
+      <p class="lead">Une expérience cocktails &amp; tapas au cœur du port de Carnon.</p>
+    </div>
+
+    <ol class="steps" id="stepsBar" aria-label="Progression">
+      <li class="steps__item is-current" data-step="1"><span>1</span>Table</li>
+      <li class="steps__item" data-step="2"><span>2</span>Horaire</li>
+      <li class="steps__item" data-step="3"><span>3</span>Coordonnées</li>
+    </ol>
+
+    <form class="flow" id="bookingForm" novalidate>
+
+      <!-- STEP 1 : date / guests / preference -->
+      <fieldset class="panel is-active" data-panel="1">
+        <legend class="sr-only">Étape 1 : votre table</legend>
+
+        <div class="field">
+          <div class="field__label">
+            <svg viewBox="0 0 24 24"><use href="#i-cal"/></svg>
+            <span>Date</span>
+            <strong id="dateLabel" class="field__value">—</strong>
+          </div>
+          <div class="datestrip" id="dateStrip" role="radiogroup" aria-label="Choisir une date"></div>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <svg viewBox="0 0 24 24"><use href="#i-people"/></svg>
+            <span>Nombre de personnes</span>
+          </div>
+          <div class="stepper">
+            <button type="button" class="stepper__btn" id="guestsMinus" aria-label="Une personne de moins">−</button>
+            <output class="stepper__value" id="guestsOut" for="guestsMinus guestsPlus" aria-live="polite">2 personnes</output>
+            <button type="button" class="stepper__btn" id="guestsPlus" aria-label="Une personne de plus">+</button>
+          </div>
+          <p class="hint" id="guestsHint" hidden>Plus de <span id="guestsMax"></span> ? <a href="#soiree" data-scroll>Faites-nous une demande spéciale</a>, on s'occupe du reste.</p>
+        </div>
+
+        <div class="field">
+          <div class="field__label">
+            <svg viewBox="0 0 24 24"><use href="#i-table"/></svg>
+            <span>Préférence <em>(optionnel)</em></span>
+          </div>
+          <div class="segmented" role="radiogroup" aria-label="Préférence de placement" id="prefGroup">
+            <label class="segmented__opt"><input type="radio" name="pref" value="Terrasse" checked><span>Terrasse</span></label>
+            <label class="segmented__opt"><input type="radio" name="pref" value="Intérieur"><span>Intérieur</span></label>
+            <label class="segmented__opt"><input type="radio" name="pref" value="Peu importe"><span>Peu importe</span></label>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn--primary btn--xl btn--full" data-next="2">
+          <span>Voir les disponibilités</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg>
+        </button>
+        <p class="reassure"><svg viewBox="0 0 24 24"><use href="#i-bolt"/></svg>Réservation confirmée en moins de 30 secondes</p>
+      </fieldset>
+
+      <!-- STEP 2 : time -->
+      <fieldset class="panel" data-panel="2">
+        <legend class="sr-only">Étape 2 : votre horaire</legend>
+        <div class="panel__head">
+          <button type="button" class="linkback" data-prev="1">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4L6 9l5 5"/></svg>Modifier
+          </button>
+          <h3 class="h3">Disponibilités</h3>
+          <p class="muted" id="recap2">—</p>
+        </div>
+
+        <div class="slots" id="slots" role="radiogroup" aria-label="Choisir un horaire"></div>
+        <p class="hint hint--err" id="slotsErr" hidden>Choisissez un horaire pour continuer.</p>
+
+        <div class="prefcard" id="prefCard">
+          <div class="prefcard__img" aria-hidden="true">
+            <img src="assets/img/terrasse.jpg" alt="" onerror="this.remove()">
+            <svg class="palm" viewBox="0 0 200 300"><use href="#palm"/></svg>
+          </div>
+          <div class="prefcard__body">
+            <svg viewBox="0 0 24 24" class="prefcard__icon"><use href="#i-sun"/></svg>
+            <div>
+              <strong id="prefCardTitle">Terrasse</strong>
+              <p id="prefCardText">Profitez de l'ambiance du port et de nos canapés en extérieur.</p>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn--primary btn--xl btn--full" data-next="3">
+          <span>Continuer</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg>
+        </button>
+      </fieldset>
+
+      <!-- STEP 3 : contact -->
+      <fieldset class="panel" data-panel="3">
+        <legend class="sr-only">Étape 3 : vos coordonnées</legend>
+        <div class="panel__head">
+          <button type="button" class="linkback" data-prev="2">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4L6 9l5 5"/></svg>Modifier
+          </button>
+          <h3 class="h3">Vos coordonnées</h3>
+          <p class="muted" id="recap3">—</p>
+        </div>
+
+        <div class="inputs">
+          <div class="input">
+            <input id="firstName" name="firstName" type="text" autocomplete="given-name" placeholder=" " required>
+            <label for="firstName">Prénom</label>
+          </div>
+          <div class="input">
+            <input id="lastName" name="lastName" type="text" autocomplete="family-name" placeholder=" " required>
+            <label for="lastName">Nom</label>
+          </div>
+          <div class="input">
+            <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder=" " required>
+            <label for="phone">Téléphone</label>
+          </div>
+          <div class="input">
+            <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder=" ">
+            <label for="email">E-mail <em>(pour recevoir la confirmation)</em></label>
+          </div>
+          <div class="input input--area">
+            <textarea id="note" name="note" rows="3" placeholder=" "></textarea>
+            <label for="note">Demande spéciale <em>(optionnel)</em></label>
+          </div>
+        </div>
+        <p class="hint hint--err" id="contactErr" hidden>Merci de renseigner votre prénom, nom et téléphone.</p>
+
+        <button type="submit" class="btn btn--primary btn--xl btn--full" id="submitBtn">
+          <span>Confirmer la réservation</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l3 3 7-7"/></svg>
+        </button>
+        <p class="legal">En confirmant, vous acceptez d'être contacté par Una Más au sujet de cette réservation.</p>
+      </fieldset>
+
+      <!-- STEP 4 : confirmation -->
+      <div class="panel panel--confirm" data-panel="4" aria-live="polite">
+        <div class="confirm__badge" aria-hidden="true">
+          <svg class="confetti" viewBox="0 0 200 120">
+            <path d="M28 30l6-10M170 22l-7 9M40 92l-9 6M160 96l8 4M104 14l1-11M62 18c2 3 5 4 8 3M140 60c3-2 6-1 7 2" />
+          </svg>
+          <span class="confirm__check">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
+          </span>
+        </div>
+        <h3 class="h2 confirm__title">Réservation<br>confirmée&nbsp;!</h3>
+        <p class="lead">À très vite chez Una Más, <span id="confirmName"></span></p>
+        <p class="ref">Référence <strong id="confirmRef"></strong></p>
+
+        <dl class="recapcard" id="recapCard">
+          <div><dt><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg></dt><dd id="rcDate"></dd></div>
+          <div><dt><svg viewBox="0 0 24 24"><use href="#i-clock"/></svg></dt><dd id="rcTime"></dd></div>
+          <div><dt><svg viewBox="0 0 24 24"><use href="#i-people"/></svg></dt><dd id="rcGuests"></dd></div>
+          <div><dt><svg viewBox="0 0 24 24"><use href="#i-table"/></svg></dt><dd id="rcPref"></dd></div>
+          <div id="rcNoteRow" hidden><dt><svg viewBox="0 0 24 24"><use href="#i-chat"/></svg></dt><dd id="rcNote"></dd></div>
+        </dl>
+
+        <button type="button" class="btn btn--outline btn--full" id="icsBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-cal"/></svg>
+          <span>Ajouter à mon agenda</span>
+        </button>
+        <div class="confirm__actions">
+          <button type="button" class="btn btn--ghost" id="editBtn">Modifier</button>
+          <button type="button" class="btn btn--ghost" id="cancelBtn">Annuler</button>
+        </div>
+
+        <p class="script" aria-hidden="true">Good drinks<br>Good people</p>
+        <p class="tiny">UNA MÁS • PORT DE CARNON</p>
+      </div>
+
+    </form>
+  </section>
+
+  <!-- ============ SOIRÉE / SPECIAL REQUESTS ============ -->
+  <section class="soiree" id="soiree" aria-labelledby="soireeTitle">
+    <div class="soiree__scene" aria-hidden="true">
+      <img src="assets/img/soiree.jpg" alt="" onerror="this.remove()">
+    </div>
+    <div class="soiree__content">
+      <h2 class="h2 h2--light" id="soireeTitle">Une soirée<br>à votre image</h2>
+      <p class="lead lead--light">Anniversaire, afterwork, groupe&nbsp;? Faites-nous part de vos demandes, on s'occupe du reste.</p>
+      <a class="btn btn--light btn--full" href="#reservation" data-scroll data-special="">
+        <svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-chat"/></svg>
+        <span>Demande spéciale</span>
+        <svg class="btn__arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg>
+      </a>
+      <div class="occasions">
+        <a href="#reservation" data-scroll data-special="Anniversaire"><svg viewBox="0 0 24 24"><use href="#i-cake"/></svg><span>Anniversaire</span></a>
+        <a href="#reservation" data-scroll data-special="Groupe"><svg viewBox="0 0 24 24"><use href="#i-cheers"/></svg><span>Groupe</span></a>
+        <a href="#reservation" data-scroll data-special="Événement privé"><svg viewBox="0 0 24 24"><use href="#i-music"/></svg><span>Événement privé</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="neon" aria-hidden="true">
+    <img src="assets/img/neon.jpg" alt="" onerror="this.remove()">
+    <p class="neon__text">Good drinks<br>Good people<br>Better days</p>
+  </section>
+
+  <!-- ============ FOOTER / NOUS TROUVER ============ -->
+  <footer class="foot" id="trouver">
+    <div class="brand brand--foot">
+      <span class="brand__word">UNA<br>MÁS</span>
+      <span class="brand__sub">Cocktails &amp; Food</span>
+    </div>
+    <address class="foot__addr">
+      Port de Carnon<br>
+      Place Saint Marc, 34130 Mauguio
+    </address>
+    <div class="foot__links">
+      <a class="btn btn--outline-light" id="phoneLink" href="tel:+33467543649"><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-phone"/></svg><span>04 67 54 36 49</span></a>
+      <a class="btn btn--outline-light" id="mapsLink" href="https://www.google.com/maps/search/?api=1&query=Una+M%C3%A1s+Place+Saint+Marc+34130+Mauguio" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-pin"/></svg><span>Itinéraire</span></a>
+    </div>
+    <a class="foot__insta" id="instaLink" href="https://www.instagram.com/" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-insta"/></svg>Instagram</a>
+    <p class="tiny tiny--foot">© <span id="year"></span> Una Más · Port de Carnon</p>
+  </footer>
+
+</div><!-- /app -->
+</div><!-- /stage -->
+
+<!-- ============ DRAWER MENU ============ -->
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer__backdrop" data-close></div>
+  <nav class="drawer__panel" aria-label="Menu principal">
+    <div class="drawer__top">
+      <div class="brand brand--drawer">
+        <span class="brand__word">UNA<br>MÁS</span>
+        <span class="brand__sub">Cocktails &amp; Food</span>
+      </div>
+      <button class="iconbtn iconbtn--light" data-close aria-label="Fermer le menu">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l10 10M14 4L4 14"/></svg>
+      </button>
+    </div>
+    <ul class="drawer__nav">
+      <li><a href="#accueil" data-scroll><svg viewBox="0 0 24 24"><use href="#i-home"/></svg>Accueil</a></li>
+      <li><a href="#reservation" data-scroll><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg>Réserver une table</a></li>
+      <li class="drawer__sep"></li>
+      <li id="navCocktails" hidden><a href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#i-cocktail"/></svg>Carte des cocktails</a></li>
+      <li id="navTapas" hidden><a href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#i-tapas"/></svg>Nos tapas</a></li>
+      <li><a href="#soiree" data-scroll><svg viewBox="0 0 24 24"><use href="#i-music"/></svg>Événements</a></li>
+      <li id="navInsta" hidden><a href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#i-insta"/></svg>Instagram</a></li>
+      <li><a href="#trouver" data-scroll><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg>Nous trouver</a></li>
+    </ul>
+    <a class="btn btn--outline-light btn--full drawer__phone" href="tel:+33467543649"><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-phone"/></svg><span>04 67 54 36 49</span></a>
+    <p class="drawer__addr">Port de Carnon<br>Place Saint Marc, 34130 Mauguio</p>
+  </nav>
+</div>
+
+<!-- ============ CANCEL DIALOG ============ -->
+<dialog class="dialog" id="cancelDialog">
+  <form method="dialog">
+    <h3 class="h3">Annuler la réservation&nbsp;?</h3>
+    <p class="muted">Votre table sera libérée. Vous pourrez réserver à nouveau à tout moment.</p>
+    <div class="dialog__actions">
+      <button class="btn btn--ghost" value="keep">Garder ma table</button>
+      <button class="btn btn--danger" value="cancel">Oui, annuler</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ============ ICON SPRITE ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="palm" fill="currentColor"></g>
+    <symbol id="i-cocktail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14l-7 8-7-8zM12 12v7M8 19h8M9 4l3 3.5L15 4"/></symbol>
+    <symbol id="i-tapas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7M9 3v7M5 3v7c0 1.5 1 2.5 2 2.5S9 11.5 9 10M7 12.5V21M16 3c-2 0-3 3-3 6s1 4 2 4v8M15 13c1 0 2-1.5 2-4s-1-6-1-6"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-5.5-6-11a6 6 0 0112 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 5.5a3 3 0 010 5.5M20.5 19c0-2.6-1.6-4.6-4-5.4"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18M5 9v10M19 9v10M8 9V6h8v3M5 14h14"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.5"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L5 13h6l-1 8 9-11h-6l1-7z"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v8a2.5 2.5 0 01-2.5 2.5H10l-5 4V17H6.5A2.5 2.5 0 014 14.5v-8z"/></symbol>
+    <symbol id="i-cake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M5 20v-6a2 2 0 012-2h10a2 2 0 012 2v6M5 16c1.5 1.2 3 1.2 4.5 0s3-1.2 4.5 0 3 1.2 4.5 0M12 12V8M12 8c-1.2 0-2-1-2-2 0-1.5 2-3 2-3s2 1.5 2 3c0 1-.8 2-2 2z"/></symbol>
+    <symbol id="i-cheers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3l2 9a3 3 0 01-3 3 3 3 0 01-3-3l2-9h2zM17 3l2 9a3 3 0 01-3 3 3 3 0 01-3-3l2-9h2zM6 15v5M4 20h4M16 15v5M14 20h4"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></symbol>
+    <symbol id="i-insta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r=".8" fill="currentColor"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-4v-6h-6v6H5a1 1 0 01-1-1v-9z"/></symbol>
+  </defs>
+</svg>
+
+<script src="js/app.js"></script>
+</body>
+</html>
