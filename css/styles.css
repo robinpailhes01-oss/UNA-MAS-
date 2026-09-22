@@ -157,6 +157,63 @@ strong { font-weight: 700; }
 .reassure { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12.5px; color: var(--text-muted); margin: 14px 0 0; }
 .reassure svg { width: 16px; height: 16px; color: var(--accent); }
 
+/* ---------- La carte ---------- */
+.carte { padding: 28px var(--gutter) 30px; border-top: 1px solid var(--border); }
+.carte__head { margin-bottom: 16px; }
+.carte__tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.tile {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left;
+  min-height: 118px; padding: 14px 12px; border-radius: var(--r-md);
+  background: var(--surface-2); border: 1px solid transparent; cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out), background var(--t-fast), border-color var(--t-fast);
+}
+.tile:hover { background: var(--sage-50); border-color: var(--accent); }
+.tile:active { transform: scale(.97); }
+.tile svg { width: 24px; height: 24px; color: var(--accent); margin-bottom: 4px; }
+.tile strong { font-size: 14.5px; font-weight: 800; letter-spacing: -.01em; }
+.tile span { font-size: 11px; line-height: 1.35; color: var(--text-muted); }
+.cartelink { text-align: center; font-size: 13px; color: var(--text-muted); margin: 8px 0 0; }
+.linkbtn { background: none; border: 0; padding: 4px 2px; color: var(--accent-strong); font-weight: 700; font-size: 13px; cursor: pointer; min-height: 32px; }
+.linkbtn:hover { text-decoration: underline; }
+
+/* Sheet */
+.sheet { border: 0; padding: 0; background: transparent; width: 100%; max-width: 100%; height: 100dvh; max-height: 100dvh; margin: 0; }
+.sheet::backdrop { background: rgba(30,38,32,.45); }
+.sheet__panel {
+  position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+  width: 100%; max-width: var(--app-w); height: min(92dvh, 100%);
+  background: var(--surface); color: var(--text); border-radius: 24px 24px 0 0;
+  display: flex; flex-direction: column; overflow: hidden;
+  animation: sheetUp var(--t-base) var(--ease-out);
+}
+@keyframes sheetUp { from { transform: translate(-50%, 40px); opacity: 0 } to { transform: translate(-50%, 0); opacity: 1 } }
+@media (min-width: 720px) { .sheet__panel { bottom: auto; top: 50%; transform: translate(-50%, -50%); height: min(88dvh, 860px); border-radius: 28px; }
+  @keyframes sheetUp { from { transform: translate(-50%, -46%); opacity: 0 } to { transform: translate(-50%, -50%); opacity: 1 } } }
+.sheet__top { display: flex; align-items: center; justify-content: space-between; padding: 14px var(--gutter) 6px; }
+.brand--sheet .brand__logo { width: 52px; }
+.sheet__tabs { display: flex; gap: 6px; padding: 8px var(--gutter) 12px; border-bottom: 1px solid var(--border); }
+.sheet__tab { flex: 1; min-height: 40px; border-radius: var(--r-pill); border: 1.5px solid var(--border); background: transparent; font-weight: 700; font-size: 13.5px; color: var(--text-muted); cursor: pointer; transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast); }
+.sheet__tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--white); }
+.sheet__body { flex: 1; overflow-y: auto; padding: 18px var(--gutter) 24px; overscroll-behavior: contain; }
+.sheet__title { margin-bottom: 14px; }
+.menu-section { margin-bottom: 22px; }
+.menu-section__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1.5px solid var(--sage-100); }
+.menu-section__head h3 { margin: 0; font-size: 15px; font-weight: 800; color: var(--accent-strong); letter-spacing: -.01em; }
+.menu-section__note { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+.menu-section__cols { display: flex; justify-content: flex-end; gap: 0; font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+.menu-section__cols span { width: 80px; text-align: right; white-space: nowrap; }
+.menu-item { display: flex; align-items: baseline; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.menu-item:last-child { border-bottom: 0; }
+.menu-item__main { flex: 1; min-width: 0; }
+.menu-item__name { font-weight: 700; font-size: 14px; }
+.menu-item__desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.4; margin-top: 1px; }
+.menu-item__price { font-weight: 800; font-size: 14px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.menu-item__price--col { width: 80px; text-align: right; }
+.menu-item__price--empty { color: var(--border); }
+.sheet__foot { font-size: 12px; color: var(--text-muted); text-align: center; margin: 8px 0 0; }
+.sheet__foot a { color: var(--accent-strong); font-weight: 700; }
+.sheet__cta { padding: 12px var(--gutter) calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: var(--surface); }
+
 /* ---------- Booking ---------- */
 .booking { padding: 30px var(--gutter) 40px; background: var(--surface); border-top: 1px solid var(--border); }
 .booking__head { margin-bottom: 20px; }

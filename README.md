@@ -36,7 +36,7 @@ Tout se règle dans l'objet `CONFIG` en haut de `js/app.js` :
 | `daysAhead` | nombre de jours ouverts à la réservation |
 | `minGuests` / `maxGuests` | taille de table, au-delà le client est renvoyé vers la demande spéciale |
 | `leadMinutes` | délai minimal avant un créneau le jour même |
-| `instagram`, `cocktailsMenuUrl`, `tapasMenuUrl` | liens optionnels, les entrées de menu s'affichent seulement s'ils sont renseignés |
+| `instagram` | lien Instagram affiché dans le menu et le footer |
 | `phone`, `phoneIntl`, `address` | coordonnées affichées et utilisées dans l'agenda |
 
 ### Payload envoyé à `endpoint`
@@ -67,6 +67,14 @@ Les photos actuelles sont extraites de captures du site unamas.fr (basse résolu
 - `assets/img/hero.jpg` — terrasse (4:3, ≥ 1200 px de large)
 - `assets/img/terrasse.jpg` — carte « Terrasse » à l'étape horaire (16:8)
 - `assets/img/soiree.jpg` — section « Une soirée à votre image » (4:3)
+
+## La carte
+
+Section « La carte » sous le hero, accessible aussi depuis le menu latéral et sous le formulaire. Ouvre un panneau à trois onglets (Cocktails, Tapas, Boissons) rendu en texte natif, avec lien vers l'image originale.
+
+- Données : `js/menu.js`, transcrites des cartes publiées sur unamas.fr. Modifier ce fichier pour changer un prix ou un plat.
+- Images originales : `assets/img/carte-cocktails.jpg`, `carte-tapas.jpg`, `carte-boissons.jpg`.
+- Un item a soit `price` (prix unique) soit `prices` (plusieurs colonnes définies par `cols` sur la section, `null` pour une case vide).
 
 ## Fonctionnalités
 

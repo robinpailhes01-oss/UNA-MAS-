@@ -13,8 +13,6 @@
     address: "Place Saint Marc, 34130 Mauguio",
     place: "Port de Carnon",
     instagram: "https://www.instagram.com/unamas_cocktailbar",
-    cocktailsMenuUrl: "",          // URL PDF ou page de la carte des cocktails
-    tapasMenuUrl: "",              // URL PDF ou page des tapas
     // Envoi de la réservation : URL qui reçoit un POST JSON (Formspree, Make, n8n, Supabase Edge Function…)
     // Laisser vide = enregistrement local uniquement (mode démo).
     endpoint: "",
@@ -353,6 +351,51 @@
     if (open) $(".drawer__nav a").focus();
   }
 
+  /* ---------- La carte (bottom sheet) ---------- */
+  const MENU = window.UNAMAS_MENU || {};
+  const euro = n => n == null ? "" : `${String(n).replace(".", ",")} €`;
+
+  function renderMenu(key) {
+    const m = MENU[key];
+    if (!m) return;
+    $("#sheetTitle").textContent = m.title;
+    $("#sheetImage").href = m.image;
+    $$(".sheet__tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.menu === key)));
+    const html = m.sections.map(sec => {
+      const cols = sec.cols ? `<div class="menu-section__cols">${sec.cols.map(c => `<span>${c}</span>`).join("")}</div>` : "";
+      const items = sec.items.map(it => {
+        const price = it.prices
+          ? it.prices.map(p => `<span class="menu-item__price menu-item__price--col${p == null ? " menu-item__price--empty" : ""}">${p == null ? "—" : euro(p)}</span>`).join("")
+          : `<span class="menu-item__price">${euro(it.price)}</span>`;
+        return `<div class="menu-item"><div class="menu-item__main"><div class="menu-item__name">${it.name}</div>${it.desc ? `<div class="menu-item__desc">${it.desc}</div>` : ""}</div>${price}</div>`;
+      }).join("");
+      return `<section class="menu-section"><div class="menu-section__head"><h3>${sec.title}</h3>${sec.note ? `<span class="menu-section__note">${sec.note}</span>` : ""}</div>${cols}${items}</section>`;
+    }).join("");
+    $("#sheetContent").innerHTML = html;
+    $("#sheetBody").scrollTop = 0;
+  }
+
+  function openMenu(key) {
+    const dlg = $("#menuSheet");
+    if (!dlg) return;
+    setDrawer(false);
+    renderMenu(key);
+    if (!dlg.open) dlg.showModal();
+    document.body.style.overflow = "hidden";
+  }
+
+  function initMenu() {
+    const tabs = $("#sheetTabs");
+    if (!tabs) return;
+    tabs.innerHTML = Object.keys(MENU).map(k => `<button type="button" class="sheet__tab" role="tab" data-menu="${k}" aria-selected="false">${MENU[k].label}</button>`).join("");
+    $$(".sheet__tab").forEach(t => t.addEventListener("click", () => renderMenu(t.dataset.menu)));
+    $$("[data-menu]:not(.sheet__tab)").forEach(el => el.addEventListener("click", e => { e.preventDefault(); openMenu(el.dataset.menu); }));
+    const dlg = $("#menuSheet");
+    $$("[data-sheet-close]").forEach(b => b.addEventListener("click", () => dlg.close()));
+    dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener("close", () => { document.body.style.overflow = ""; });
+  }
+
   /* ---------- Init ---------- */
   function init() {
     $("#year").textContent = new Date().getFullYear();
@@ -364,8 +407,6 @@
     if (CONFIG.instagram) {
       ["#instaLink", "#navInsta"].forEach(s => { const el = $(s); el.hidden = false; (el.tagName === "A" ? el : el.querySelector("a")).href = CONFIG.instagram; });
     }
-    if (CONFIG.cocktailsMenuUrl) { const li = $("#navCocktails"); li.hidden = false; li.querySelector("a").href = CONFIG.cocktailsMenuUrl; }
-    if (CONFIG.tapasMenuUrl) { const li = $("#navTapas"); li.hidden = false; li.querySelector("a").href = CONFIG.tapasMenuUrl; }
     $$("a[href^='tel:']").forEach(a => { a.href = `tel:${CONFIG.phoneIntl}`; });
 
     $("#guestsMinus").addEventListener("click", () => setGuests(state.guests - 1));
@@ -404,6 +445,7 @@
       smoothTo(a.getAttribute("href"));
     }));
 
+    initMenu();
     $("#menuOpen").addEventListener("click", () => setDrawer(true));
     $$("[data-close]").forEach(b => b.addEventListener("click", () => setDrawer(false)));
     document.addEventListener("keydown", e => { if (e.key === "Escape") setDrawer(false); });
