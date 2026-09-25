@@ -19,7 +19,8 @@
   const CFG = window.ADMIN_CONFIG, STATUS = window.STATUS, SOURCES = window.SOURCES;
   const totalCap = Object.values(CFG.capacity).reduce((a, b) => a + b, 0);
 
-  const ui = { view: "today", day: todayISO(), month: todayISO().slice(0, 7), agendaDay: todayISO(), period: "upcoming", status: "", search: "", clientSort: "visits", clientSearch: "", statsDays: 30 };
+  const savedRange = Number(localStorage.getItem("unamas.admin.range")) || (window.matchMedia("(max-width: 760px)").matches ? 1 : 7);
+  const ui = { view: "planning", anchor: todayISO(), range: savedRange, period: "upcoming", status: "", search: "", clientSort: "visits", clientSearch: "", statsDays: 30 };
 
   function toast(msg, ms = 2400) { const el = $("#toast"); el.textContent = msg; el.classList.add("is-visible"); clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove("is-visible"), ms); }
   function confirmDialog(title, text, yesLabel = "Confirmer") {
@@ -42,7 +43,7 @@
     $("#shell").hidden = false;
     $("#demoBanner").hidden = !window.Store.isDemo();
     const v = (location.hash || "#today").slice(1);
-    showView(["today", "agenda", "reservations", "clients", "stats"].includes(v) ? v : "today");
+    showView(["planning", "reservations", "clients", "stats"].includes(v) ? v : "planning");
   }
 
   /* ================= Navigation ================= */
@@ -84,66 +85,51 @@
     </div>`;
   }
 
-  function groupedByTime(list) {
-    if (!list.length) return `<div class="empty"><strong>Aucune réservation</strong>Le service est libre pour l'instant.</div>`;
-    const groups = new Map();
-    list.forEach(r => { if (!groups.has(r.time)) groups.set(r.time, []); groups.get(r.time).push(r); });
-    return Array.from(groups.entries()).map(([t, rs]) => {
-      const g = rs.filter(r => r.status !== "cancelled" && r.status !== "noshow").reduce((a, r) => a + r.guests, 0);
-      return `<div class="tl-group"><div class="tl-group__time">${t}<small>${g} couv.</small></div><div class="tl-group__items">${rs.map(r => resaCard(r)).join("")}</div></div>`;
-    }).join("");
-  }
-
   function kpiTile(label, value, sub, cls = "") { return `<div class="kpi"><div class="kpi__label">${label}</div><div class="kpi__value">${value}</div>${sub ? `<div class="kpi__sub ${cls}">${sub}</div>` : ""}</div>`; }
-
-  function occupancyBlock(date) {
-    const cols = CFG.slots.map(s => {
-      const inn = window.Store.occupancy(date, s, "Intérieur"), ter = window.Store.occupancy(date, s, "Terrasse");
-      const tot = inn + ter, full = tot >= totalCap * .9;
-      const h = v => Math.max(0, Math.round(v / totalCap * 100));
-      return `<div class="occ__col${full ? " is-full" : ""}" tabindex="0" data-tip="${s} · ${tot}/${totalCap} couverts (terrasse ${ter}, intérieur ${inn})"><div class="occ__bar" style="height:${h(ter)}%"></div><div class="occ__bar occ__bar--in" style="height:${h(inn)}%"></div></div>`;
-    }).join("");
-    const peak = Math.max(...CFG.slots.map(s => window.Store.occupancy(date, s)));
-    return `<div class="occ__head"><strong>Occupation par créneau</strong><span class="occ__legend"><span><i style="background:var(--sage-300,#B9CBB1)"></i>Terrasse</span><span><i style="background:var(--sage-600)"></i>Intérieur</span><span>Pic ${peak}/${totalCap}</span></span></div>
-      <div class="occ__grid">${cols}</div><div class="occ__labels">${CFG.slots.map(s => `<span>${s.replace(":00", "h").replace(":30", "h30")}</span>`).join("")}</div>`;
-  }
 
   /* ================= Vues ================= */
   const render = {
-    today() {
-      const d = ui.day, list = window.Store.byDate(d);
-      $("#todayTitle").textContent = d === todayISO() ? "Aujourd'hui" : fmtLong(d);
-      const active = list.filter(r => r.status !== "cancelled");
-      const covers = active.filter(r => r.status !== "noshow").reduce((a, r) => a + r.guests, 0);
-      const seated = list.filter(r => r.status === "seated").length, pending = list.filter(r => r.status === "pending").length, noshow = list.filter(r => r.status === "noshow").length;
-      const y = window.Store.byDate(addDays(d, -7)).filter(r => r.status !== "cancelled" && r.status !== "noshow").reduce((a, r) => a + r.guests, 0);
-      const diff = y ? Math.round((covers - y) / y * 100) : null;
-      $("#todayKpis").innerHTML = kpiTile("Réservations", active.length, `${list.length - active.length} annulée${list.length - active.length > 1 ? "s" : ""}`)
-        + kpiTile("Couverts", covers, diff == null ? "" : `${diff >= 0 ? "+" : ""}${diff} % vs même jour S-1`, diff >= 0 ? "is-up" : "is-down")
-        + kpiTile("Installées", seated, `${active.length - seated - noshow} à venir`)
-        + kpiTile("À confirmer", pending, noshow ? `${noshow} no-show` : "", noshow ? "is-down" : "");
-      $("#todayOcc").innerHTML = occupancyBlock(d);
-      $("#todayList").innerHTML = groupedByTime(list);
-    },
+    planning() {
+      const n = ui.range;
+      let start = ui.anchor;
+      if (n === 7) { const d = parseISO(start); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); start = iso(d); }
+      const days = Array.from({ length: n }, (_, i) => addDays(start, i));
+      const end = days[n - 1], t = todayISO();
+      const dStart = parseISO(start), dEnd = parseISO(end);
+      $("#planTitle").textContent = n === 1 ? fmtLong(start) : `${dStart.getDate()}${dStart.getMonth() !== dEnd.getMonth() ? " " + dStart.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "") : ""} – ${dEnd.getDate()} ${cap(dEnd.toLocaleDateString("fr-FR", { month: "long" }))}`;
+      const all = days.map(d => window.Store.byDate(d).filter(r => r.status !== "cancelled"));
+      const totalRes = all.reduce((a, l) => a + l.length, 0), totalCov = all.reduce((a, l) => a + l.filter(r => r.status !== "noshow").reduce((x, r) => x + r.guests, 0), 0);
+      $("#planEyebrow").textContent = n === 1 ? (start === t ? "Aujourd'hui" : start < t ? "Service passé" : "Service à venir") : `${totalRes} réservation${totalRes > 1 ? "s" : ""} · ${totalCov} couverts`;
+      $$("#planRange .chip").forEach(c => c.classList.toggle("is-active", Number(c.dataset.range) === n));
 
-    agenda() {
-      const [y, m] = ui.month.split("-").map(Number);
-      const first = new Date(y, m - 1, 1), start = new Date(first); start.setDate(1 - ((first.getDay() + 6) % 7));
-      $("#agendaTitle").textContent = cap(first.toLocaleDateString("fr-FR", { month: "long", year: "numeric" }));
-      let cells = "";
-      for (let i = 0; i < 42; i++) {
-        const d = new Date(start); d.setDate(start.getDate() + i); const s = iso(d);
-        const rs = window.Store.byDate(s).filter(r => r.status !== "cancelled");
-        const covers = rs.reduce((a, r) => a + r.guests, 0);
-        const peak = Math.max(0, ...CFG.slots.map(sl => window.Store.occupancy(s, sl)));
-        cells += `<button type="button" class="cal__day${d.getMonth() !== m - 1 ? " is-out" : ""}${s === todayISO() ? " is-today" : ""}${s === ui.agendaDay ? " is-selected" : ""}" data-date="${s}" aria-label="${fmtLong(s)}, ${rs.length} réservations">
-          <span class="cal__num">${d.getDate()}</span><span class="cal__count">${rs.length ? rs.length + " · " + covers + "c" : "—"}</span><span class="cal__fill"><i style="width:${Math.min(100, Math.round(peak / totalCap * 100))}%"></i></span></button>`;
-      }
-      $("#cal").innerHTML = `<div class="cal__dow">${["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"].map(x => `<span>${x}</span>`).join("")}</div><div class="cal__grid">${cells}</div>`;
-      const list = window.Store.byDate(ui.agendaDay);
-      $("#agendaDayTitle").textContent = fmtLong(ui.agendaDay);
-      $("#agendaOcc").innerHTML = occupancyBlock(ui.agendaDay);
-      $("#agendaList").innerHTML = groupedByTime(list);
+      const head = `<th class="plan__corner" scope="col"></th>` + days.map((d, i) => {
+        const l = all[i], cov = l.filter(r => r.status !== "noshow").reduce((a, r) => a + r.guests, 0);
+        const peak = Math.max(0, ...CFG.slots.map(sl => window.Store.occupancy(d, sl)));
+        const dd = parseISO(d);
+        return `<th scope="col" class="plan__day${d === t ? " is-today" : ""}${d < t ? " is-past" : ""}">
+          <span class="plan__dow">${dd.toLocaleDateString("fr-FR", { weekday: n === 1 ? "long" : "short" }).replace(".", "")}</span>
+          <span class="plan__num">${dd.getDate()}</span>
+          <span class="plan__sum">${l.length ? `${l.length} résa${l.length > 1 ? "s" : ""} · ${cov} couv.` : "libre"}</span>
+          <span class="plan__fill" title="Pic d'occupation ${peak}/${totalCap} couverts"><i style="width:${Math.min(100, Math.round(peak / totalCap * 100))}%"></i></span>
+        </th>`;
+      }).join("");
+
+      const rows = CFG.slots.map(slot => {
+        const cells = days.map((d, i) => {
+          const rs = all[i].filter(r => r.time === slot).sort((a, b) => b.guests - a.guests);
+          const chips = rs.map(r => `<button type="button" class="plan__chip ${STATUS[r.status].cls}" data-open="${r.id}" title="${esc(fullName(r))} · ${r.guests} pers. · ${esc(r.pref)} · ${STATUS[r.status].label}${r.note ? " · " + esc(r.note) : ""}">
+              <span class="plan__chip-name">${esc(fullName(r))}</span><span class="plan__chip-g">${r.guests}</span>${r.note ? `<span class="plan__chip-note" aria-label="Note"></span>` : ""}
+            </button>`).join("");
+          return `<td class="plan__cell${d === t ? " is-today" : ""}${d < t ? " is-past" : ""}" data-date="${d}" data-time="${slot}">${chips}</td>`;
+        }).join("");
+        const rowCov = all.reduce((a, l) => a + l.filter(r => r.time === slot && r.status !== "noshow").reduce((x, r) => x + r.guests, 0), 0);
+        return `<tr><th scope="row" class="plan__time">${slot}${n > 1 && rowCov ? `<small>${rowCov}</small>` : ""}</th>${cells}</tr>`;
+      }).join("");
+
+      $("#plan").innerHTML = `<table class="plan__table" style="--cols:${n}"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>`;
+      $("#plan").classList.toggle("plan--day", n === 1);
+      const plan = $("#plan"); plan.scrollLeft = 0;
+      if (n > 1 && days.includes(t)) { const col = $(".plan__day.is-today"), corner = $(".plan__corner"); if (col && plan.scrollWidth > plan.clientWidth) plan.scrollLeft = Math.max(0, col.offsetLeft - corner.offsetWidth); }
     },
 
     reservations() {
@@ -180,54 +166,24 @@
       const served = l => l.filter(r => r.status === "seated");
       const covers = l => served(l).reduce((a, r) => a + r.guests, 0);
       const pct = (a, b) => b ? Math.round((a - b) / b * 100) : null;
-      const delta = (a, b, suffix = "") => { const p = pct(a, b); return p == null ? "" : `${p >= 0 ? "+" : ""}${p} %${suffix} vs période précédente`; };
+      const delta = (a, b) => { const p = pct(a, b); return p == null ? "" : `${p >= 0 ? "+" : ""}${p} % vs ${days} jours précédents`; };
       const cls = (a, b, inverse = false) => { const p = pct(a, b); if (p == null) return ""; return (p >= 0) !== inverse ? "is-up" : "is-down"; };
       const noshowRate = l => { const base = l.filter(r => ["seated", "noshow"].includes(r.status)).length; return base ? Math.round(l.filter(r => r.status === "noshow").length / base * 100) : 0; };
-      const avg = l => served(l).length ? (covers(l) / served(l).length).toFixed(1).replace(".", ",") : "0";
+      const nCur = cur.filter(r => r.status !== "cancelled").length, nPrev = prev.filter(r => r.status !== "cancelled").length;
       $("#statsKpis").innerHTML =
         kpiTile("Couverts servis", covers(cur), delta(covers(cur), covers(prev)), cls(covers(cur), covers(prev)))
-        + kpiTile("Réservations", cur.filter(r => r.status !== "cancelled").length, delta(cur.filter(r => r.status !== "cancelled").length, prev.filter(r => r.status !== "cancelled").length), cls(cur.filter(r => r.status !== "cancelled").length, prev.filter(r => r.status !== "cancelled").length))
-        + kpiTile("Taille moyenne", avg(cur), "personnes par table")
-        + kpiTile("Taux de no-show", noshowRate(cur) + " %", `${noshowRate(prev)} % période précédente`, noshowRate(cur) <= noshowRate(prev) ? "is-up" : "is-down");
+        + kpiTile("Réservations", nCur, delta(nCur, nPrev), cls(nCur, nPrev))
+        + kpiTile("No-show", noshowRate(cur) + " %", `${noshowRate(prev)} % avant`, noshowRate(cur) <= noshowRate(prev) ? "is-up" : "is-down");
 
-      // Couverts par jour (barres, une série)
       const byDay = []; for (let i = 0; i < days; i++) { const d = addDays(from, i); byDay.push({ d, v: covers(cur.filter(r => r.date === d)) }); }
       const W = 640, H = 180, P = { l: 28, r: 6, t: 14, b: 26 }, max = Math.max(10, ...byDay.map(x => x.v));
       const bw = (W - P.l - P.r) / byDay.length, gap = Math.min(3, bw * .25);
       const yTicks = [0, Math.round(max / 2), max];
       const barsSvg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Couverts servis par jour">
         ${yTicks.map(v => { const y = P.t + (H - P.t - P.b) * (1 - v / max); return `<line class="grid" x1="${P.l}" x2="${W - P.r}" y1="${y}" y2="${y}"/><text class="axis" x="${P.l - 6}" y="${y + 3}" text-anchor="end">${v}</text>`; }).join("")}
-        ${byDay.map((x, i) => { const h = (H - P.t - P.b) * x.v / max, X = P.l + i * bw + gap / 2, Y = H - P.b - h; const dow = parseISO(x.d).getDay(); return `<g><rect class="bar${x.v ? "" : " bar--muted"}" x="${X.toFixed(1)}" y="${Y.toFixed(1)}" width="${(bw - gap).toFixed(1)}" height="${Math.max(2, h).toFixed(1)}" rx="3"><title>${fmtLong(x.d)} · ${x.v} couverts</title></rect>${(days <= 7 || (days <= 30 && dow === 1) || (days > 30 && parseISO(x.d).getDate() === 1)) ? `<text class="axis" x="${(X + (bw - gap) / 2).toFixed(1)}" y="${H - 8}" text-anchor="middle">${days <= 7 ? fmtShort(x.d).split(" ")[0] : parseISO(x.d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }).replace(".", "")}</text>` : ""}</g>`; }).join("")}
+        ${byDay.map((x, i) => { const h = (H - P.t - P.b) * x.v / max, X = P.l + i * bw + gap / 2, Y = H - P.b - h; const dow = parseISO(x.d).getDay(); return `<g><rect class="bar${x.v ? "" : " bar--muted"}" x="${X.toFixed(1)}" y="${Y.toFixed(1)}" width="${(bw - gap).toFixed(1)}" height="${Math.max(2, h).toFixed(1)}" rx="3"><title>${fmtLong(x.d)} · ${x.v} couverts</title></rect>${(days <= 7 || dow === 1) ? `<text class="axis" x="${(X + (bw - gap) / 2).toFixed(1)}" y="${H - 8}" text-anchor="middle">${days <= 7 ? fmtShort(x.d).split(" ")[0] : parseISO(x.d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }).replace(".", "")}</text>` : ""}</g>`; }).join("")}
       </svg>`;
-
-      // Créneaux
-      const slotCov = CFG.slots.map(s => ({ label: s, v: covers(cur.filter(r => r.time === s)) }));
-      const hbars = (rows, colorClassFn) => { const m = Math.max(1, ...rows.map(r => r.v)); return `<div class="hbars">${rows.map((r, i) => `<div class="hbar ${colorClassFn ? colorClassFn(r, i) : ""}"><span class="hbar__label">${esc(r.label)}</span><span class="hbar__track"><span class="hbar__fill" style="width:${Math.round(r.v / m * 100)}%"></span></span><span class="hbar__val">${r.v}${r.suffix ? `<small>${r.suffix}</small>` : ""}</span></div>`).join("")}</div>`; };
-
-      // Jours de la semaine
-      const dows = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
-      const dowCov = dows.map((label, i) => ({ label, v: covers(cur.filter(r => (parseISO(r.date).getDay() + 6) % 7 === i)) }));
-
-      // Canal d'origine (catégoriel, ordre fixe, une couleur par entité)
-      const srcOrder = ["web", "phone", "whatsapp", "walkin"];
-      const srcRows = srcOrder.map(k => ({ key: k, label: SOURCES[k], v: cur.filter(r => r.status !== "cancelled" && r.source === k).length }));
-      const srcTotal = srcRows.reduce((a, r) => a + r.v, 0) || 1;
-
-      // Zone
-      const zoneRows = ["Terrasse", "Intérieur", "Peu importe"].map(z => ({ label: z, v: cur.filter(r => r.status !== "cancelled" && r.pref === z).length }));
-
-      // Top clients
-      const top = window.Store.customers().map(c => ({ ...c, pv: c.history.filter(r => r.status === "seated" && r.date >= from && r.date <= t).length })).filter(c => c.pv > 0).sort((a, b) => b.pv - a.pv).slice(0, 5);
-
-      $("#charts").innerHTML = `
-        <div class="chart chart--wide"><div class="chart__head"><span class="chart__title">Couverts servis par jour</span><span class="chart__sub">${fmtShort(from)} → ${fmtShort(t)}</span></div>${barsSvg}</div>
-        <div class="chart"><div class="chart__head"><span class="chart__title">Couverts par créneau</span><span class="chart__sub">heure d'arrivée</span></div>${hbars(slotCov)}</div>
-        <div class="chart"><div class="chart__head"><span class="chart__title">Couverts par jour de la semaine</span></div>${hbars(dowCov)}</div>
-        <div class="chart"><div class="chart__head"><span class="chart__title">Canal de réservation</span><span class="chart__sub">${srcTotal} réservations</span></div>${hbars(srcRows.map(r => ({ ...r, suffix: `${Math.round(r.v / srcTotal * 100)} %` })))}</div>
-        <div class="chart"><div class="chart__head"><span class="chart__title">Placement demandé</span></div>${hbars(zoneRows)}</div>
-        <div class="chart chart--wide"><div class="chart__head"><span class="chart__title">Clients les plus fidèles sur la période</span><span class="chart__sub">visites installées</span></div>
-          ${top.length ? `<div class="toplist">${top.map(c => `<div class="client" role="button" tabindex="0" data-client="${c.key}"><span class="avatar">${initials(c)}</span><div><div class="client__name">${esc(fullName(c))}</div><div class="client__meta">${esc(c.phone)} · ${c.visits} visite${c.visits > 1 ? "s" : ""} au total</div></div><div class="client__visits"><strong>${c.pv}</strong><span>sur la période</span></div></div>`).join("")}</div>` : `<div class="empty">Pas encore de visite sur la période.</div>`}
-        </div>`;
+      $("#charts").innerHTML = `<div class="chart chart--wide"><div class="chart__head"><span class="chart__title">Couverts servis par jour</span><span class="chart__sub">${fmtShort(from)} → ${fmtShort(t)}</span></div>${barsSvg}</div>`;
     }
   };
 
@@ -242,15 +198,15 @@
   }
 
   /* ================= Fiche réservation ================= */
-  function openResa(id) {
+  function openResa(id, prefill = {}) {
     const r = id ? window.Store.get(id) : null;
     const dlg = $("#resaSheet");
     $("#rsId").value = r ? r.id : "";
     $("#rsRef").textContent = r ? `${r.ref} · ${SOURCES[r.source] || ""}` : "Nouvelle réservation";
     $("#rsName").textContent = r ? fullName(r) : "Saisie manuelle";
     $("#rsTime").innerHTML = CFG.slots.map(s => `<option>${s}</option>`).join("");
-    $("#rsDate").value = r ? r.date : (ui.view === "agenda" ? ui.agendaDay : ui.day);
-    $("#rsTime").value = r ? r.time : "20:00";
+    $("#rsDate").value = r ? r.date : (prefill.date || (ui.view === "planning" ? ui.anchor : todayISO()));
+    $("#rsTime").value = r ? r.time : (prefill.time || "20:00");
     $("#rsGuests").value = r ? r.guests : 2;
     $("#rsPref").value = r ? r.pref : "Terrasse";
     $("#rsFirst").value = r ? r.firstName : ""; $("#rsLast").value = r ? r.lastName : "";
@@ -305,9 +261,9 @@
   function bind() {
     $$("[data-view]").forEach(a => { if (a.tagName === "A") a.addEventListener("click", e => { e.preventDefault(); showView(a.dataset.view); }); });
     $$("[data-new-resa]").forEach(b => b.addEventListener("click", () => openResa(null)));
-    $$("[data-day]").forEach(b => b.addEventListener("click", () => { const n = Number(b.dataset.day); ui.day = n === 0 ? todayISO() : addDays(ui.day, n); render.today(); }));
-    $$("[data-month]").forEach(b => b.addEventListener("click", () => { const n = Number(b.dataset.month); if (n === 0) { ui.month = todayISO().slice(0, 7); ui.agendaDay = todayISO(); } else { const [y, m] = ui.month.split("-").map(Number); const d = new Date(y, m - 1 + n, 1); ui.month = iso(d).slice(0, 7); } render.agenda(); }));
-    $("#cal").addEventListener("click", e => { const b = e.target.closest(".cal__day"); if (!b) return; ui.agendaDay = b.dataset.date; if (b.dataset.date.slice(0, 7) !== ui.month) ui.month = b.dataset.date.slice(0, 7); render.agenda(); });
+    $$("#planRange .chip").forEach(b => b.addEventListener("click", () => { ui.range = Number(b.dataset.range); localStorage.setItem("unamas.admin.range", ui.range); render.planning(); }));
+    $$("[data-nav]").forEach(b => b.addEventListener("click", () => { const n = Number(b.dataset.nav); ui.anchor = n === 0 ? todayISO() : addDays(ui.anchor, n * ui.range); render.planning(); }));
+    $("#plan").addEventListener("click", e => { if (e.target.closest("[data-open]")) return; const cell = e.target.closest(".plan__cell"); if (cell) openResa(null, { date: cell.dataset.date, time: cell.dataset.time }); });
 
     $("#resaSearch").addEventListener("input", e => { ui.search = e.target.value; render.reservations(); });
     $("#resaPeriod").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; ui.period = b.dataset.period; $$("#resaPeriod .chip").forEach(x => x.classList.toggle("is-active", x === b)); render.reservations(); });

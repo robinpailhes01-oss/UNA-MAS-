@@ -18,7 +18,7 @@ Déployable tel quel sur Vercel, Netlify, GitHub Pages ou n'importe quel héberg
 
 ```
 index.html          page client (hero, carte, réservation, soirée, footer, menu)
-admin/index.html    tableau de bord du gérant (login, service du jour, agenda, réservations, clients, stats)
+admin/index.html    tableau de bord du gérant (login, planning, réservations, clients, activité)
 css/styles.css      tokens de marque + composants partagés
 css/admin.css       styles du tableau de bord (importe styles.css)
 js/app.js           logique de réservation client + CONFIG
@@ -32,11 +32,10 @@ Deux adresses pour un seul déploiement : la racine pour les clients, `/admin` p
 
 ## Tableau de bord gérant (`/admin`)
 
-- **Aujourd'hui** : indicateurs du service, occupation par créneau (terrasse / intérieur), réservations groupées par heure avec actions rapides (confirmer, installer, no-show, annuler).
-- **Agenda** : calendrier mensuel avec nombre de réservations, couverts et jauge de remplissage par jour, détail du jour sélectionné.
+- **Planning** : grille heures × jours, au choix jour, 3 jours ou semaine (choix mémorisé). Chaque colonne affiche le nombre de réservations, les couverts et une jauge de remplissage. Chaque réservation est une pastille colorée par statut. Un tap sur une pastille ouvre la fiche, un tap sur une case vide crée une réservation pré-remplie à cette date et cette heure.
 - **Réservations** : recherche (nom, téléphone, référence), filtres période et statut, fiche complète modifiable, création manuelle pour les réservations téléphoniques.
 - **Clients** : fiches agrégées par téléphone (visites, couverts, no-show, à venir, historique), tags et notes internes du gérant, tag « Habitué » automatique à partir de 3 visites.
-- **Statistiques** : 7 / 30 / 90 jours, couverts servis par jour, par créneau, par jour de semaine, canal de réservation, placement, clients les plus fidèles.
+- **Activité** : volontairement réduit à trois chiffres (couverts servis, réservations, taux de no-show, comparés à la période précédente) et un graphique des couverts par jour, sur 7 ou 30 jours.
 
 ### Mode démo et bascule vers Supabase
 

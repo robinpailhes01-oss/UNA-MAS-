@@ -39,11 +39,10 @@
   <aside class="side">
     <a class="brand side__brand" href="#today" data-view="today"><span class="brand__logo" role="img" aria-label="Una Más"></span></a>
     <nav class="side__nav" aria-label="Navigation">
-      <a href="#today" data-view="today" class="is-active"><svg viewBox="0 0 24 24"><use href="#i-sun"/></svg><span>Aujourd'hui</span></a>
-      <a href="#agenda" data-view="agenda"><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg><span>Agenda</span></a>
+      <a href="#planning" data-view="planning" class="is-active"><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg><span>Planning</span></a>
       <a href="#reservations" data-view="reservations"><svg viewBox="0 0 24 24"><use href="#i-list"/></svg><span>Réservations</span></a>
       <a href="#clients" data-view="clients"><svg viewBox="0 0 24 24"><use href="#i-people"/></svg><span>Clients</span></a>
-      <a href="#stats" data-view="stats"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>Statistiques</span></a>
+      <a href="#stats" data-view="stats"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>Activité</span></a>
     </nav>
     <button type="button" class="btn btn--primary btn--full side__new" data-new-resa>
       <svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-plus"/></svg><span>Nouvelle réservation</span>
@@ -60,45 +59,28 @@
       <button type="button" class="linkbtn" id="resetDemo">Réinitialiser</button>
     </div>
 
-    <!-- AUJOURD'HUI -->
-    <section class="view is-active" id="view-today" data-view="today">
+    <!-- PLANNING -->
+    <section class="view is-active" id="view-planning" data-view="planning">
       <header class="view__head">
         <div>
-          <p class="eyebrow">Service</p>
-          <h1 class="h2" id="todayTitle">Aujourd'hui</h1>
+          <p class="eyebrow" id="planEyebrow">Planning</p>
+          <h1 class="h2" id="planTitle"></h1>
         </div>
-        <div class="daynav">
-          <button type="button" class="iconbtn iconbtn--sm" data-day="-1" aria-label="Jour précédent"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4L6 9l5 5"/></svg></button>
-          <button type="button" class="btn btn--ghost btn--sm" data-day="0">Aujourd'hui</button>
-          <button type="button" class="iconbtn iconbtn--sm" data-day="1" aria-label="Jour suivant"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg></button>
-        </div>
-      </header>
-      <div class="kpis" id="todayKpis"></div>
-      <div class="occ" id="todayOcc"></div>
-      <div class="timeline" id="todayList"></div>
-    </section>
-
-    <!-- AGENDA -->
-    <section class="view" id="view-agenda" data-view="agenda">
-      <header class="view__head">
-        <div>
-          <p class="eyebrow">Agenda</p>
-          <h1 class="h2" id="agendaTitle">Septembre 2026</h1>
-        </div>
-        <div class="daynav">
-          <button type="button" class="iconbtn iconbtn--sm" data-month="-1" aria-label="Mois précédent"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4L6 9l5 5"/></svg></button>
-          <button type="button" class="btn btn--ghost btn--sm" data-month="0">Ce mois</button>
-          <button type="button" class="iconbtn iconbtn--sm" data-month="1" aria-label="Mois suivant"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg></button>
+        <div class="plan-controls">
+          <div class="chips chips--seg" id="planRange">
+            <button type="button" class="chip" data-range="1">Jour</button>
+            <button type="button" class="chip" data-range="3">3 jours</button>
+            <button type="button" class="chip" data-range="7">Semaine</button>
+          </div>
+          <div class="daynav">
+            <button type="button" class="iconbtn iconbtn--sm" data-nav="-1" aria-label="Précédent"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4L6 9l5 5"/></svg></button>
+            <button type="button" class="btn btn--ghost btn--sm" data-nav="0">Aujourd'hui</button>
+            <button type="button" class="iconbtn iconbtn--sm" data-nav="1" aria-label="Suivant"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg></button>
+          </div>
         </div>
       </header>
-      <div class="agenda">
-        <div class="cal" id="cal"></div>
-        <div class="agenda__day">
-          <h2 class="h3" id="agendaDayTitle"></h2>
-          <div class="occ" id="agendaOcc"></div>
-          <div class="timeline" id="agendaList"></div>
-        </div>
-      </div>
+      <div class="plan" id="plan"></div>
+      <p class="plan__legend"><span><i class="st-confirmed"></i>Confirmée</span><span><i class="st-pending"></i>En attente</span><span><i class="st-seated"></i>Installée</span><span><i class="st-noshow"></i>No-show</span><span class="plan__tip">Touchez une case vide pour ajouter une réservation.</span></p>
     </section>
 
     <!-- RÉSERVATIONS -->
@@ -149,31 +131,29 @@
       <div class="clients" id="clientList"></div>
     </section>
 
-    <!-- STATISTIQUES -->
+    <!-- ACTIVITÉ -->
     <section class="view" id="view-stats" data-view="stats">
       <header class="view__head">
         <div>
-          <p class="eyebrow">Statistiques</p>
-          <h1 class="h2">Activité</h1>
+          <p class="eyebrow">Activité</p>
+          <h1 class="h2">L'essentiel</h1>
         </div>
-        <div class="chips" id="statsPeriod">
+        <div class="chips chips--seg" id="statsPeriod">
           <button type="button" class="chip" data-days="7">7 jours</button>
           <button type="button" class="chip is-active" data-days="30">30 jours</button>
-          <button type="button" class="chip" data-days="90">90 jours</button>
         </div>
       </header>
-      <div class="kpis" id="statsKpis"></div>
+      <div class="kpis kpis--3" id="statsKpis"></div>
       <div class="charts" id="charts"></div>
     </section>
   </main>
 
   <nav class="tabbar" aria-label="Navigation mobile">
-    <a href="#today" data-view="today" class="is-active"><svg viewBox="0 0 24 24"><use href="#i-sun"/></svg><span>Service</span></a>
-    <a href="#agenda" data-view="agenda"><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg><span>Agenda</span></a>
-    <button type="button" class="tabbar__new" data-new-resa aria-label="Nouvelle réservation"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></button>
+    <a href="#planning" data-view="planning" class="is-active"><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg><span>Planning</span></a>
     <a href="#reservations" data-view="reservations"><svg viewBox="0 0 24 24"><use href="#i-list"/></svg><span>Résas</span></a>
+    <button type="button" class="tabbar__new" data-new-resa aria-label="Nouvelle réservation"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></button>
     <a href="#clients" data-view="clients"><svg viewBox="0 0 24 24"><use href="#i-people"/></svg><span>Clients</span></a>
-    <a href="#stats" data-view="stats"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>Stats</span></a>
+    <a href="#stats" data-view="stats"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>Activité</span></a>
   </nav>
 </div>
 
