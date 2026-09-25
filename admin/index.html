@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Una Más — Tableau de bord</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2377926E'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' font-weight='600' fill='%23FFFFFF' text-anchor='middle'%3EUM%3C/text%3E%3C/svg%3E">
+</head>
+<body class="admin">
+
+<!-- ============ LOGIN ============ -->
+<div class="login" id="login">
+  <form class="login__card" id="loginForm" novalidate>
+    <span class="brand"><span class="brand__logo" role="img" aria-label="Una Más"></span></span>
+    <h1 class="h2">Espace gérant</h1>
+    <p class="lead">Réservations, agenda, clients et statistiques d'Una Más.</p>
+    <div class="inputs">
+      <div class="input"><input id="loginEmail" type="email" autocomplete="username" placeholder=" "><label for="loginEmail">E-mail</label></div>
+      <div class="input"><input id="loginPass" type="password" autocomplete="current-password" placeholder=" "><label for="loginPass">Mot de passe</label></div>
+    </div>
+    <p class="hint hint--err" id="loginErr" hidden></p>
+    <button type="submit" class="btn btn--primary btn--xl btn--full" id="loginBtn"><span>Se connecter</span></button>
+    <div class="login__demo" id="loginDemo">
+      <p class="muted">Base de données non connectée. Le tableau de bord tourne avec un jeu de démonstration local.</p>
+      <button type="button" class="btn btn--outline btn--full" id="demoBtn">Entrer en mode démo</button>
+    </div>
+  </form>
+</div>
+
+<!-- ============ SHELL ============ -->
+<div class="shell" id="shell" hidden>
+
+  <aside class="side">
+    <a class="brand side__brand" href="#today" data-view="today"><span class="brand__logo" role="img" aria-label="Una Más"></span></a>
+    <nav class="side__nav" aria-label="Navigation">
+      <a href="#today" data-view="today" class="is-active"><svg viewBox="0 0 24 24"><use href="#i-sun"/></svg><span>Aujourd'hui</span></a>
+      <a href="#agenda" data-view="agenda"><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg><span>Agenda</span></a>
+      <a href="#reservations" data-view="reservations"><svg viewBox="0 0 24 24"><use href="#i-list"/></svg><span>Réservations</span></a>
+      <a href="#clients" data-view="clients"><svg viewBox="0 0 24 24"><use href="#i-people"/></svg><span>Clients</span></a>
+      <a href="#stats" data-view="stats"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>Statistiques</span></a>
+    </nav>
+    <button type="button" class="btn btn--primary btn--full side__new" data-new-resa>
+      <svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-plus"/></svg><span>Nouvelle réservation</span>
+    </button>
+    <div class="side__foot">
+      <a class="side__link" href="../index.html" target="_blank" rel="noopener">Voir la page client</a>
+      <button type="button" class="side__link" id="logoutBtn">Se déconnecter</button>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="demo-banner" id="demoBanner" hidden>
+      <span>Mode démo : données fictives stockées dans ce navigateur.</span>
+      <button type="button" class="linkbtn" id="resetDemo">Réinitialiser</button>
+    </div>
+
+    <!-- AUJOURD'HUI -->
+    <section class="view is-active" id="view-today" data-view="today">
+      <header class="view__head">
+        <div>
+          <p class="eyebrow">Service</p>
+          <h1 class="h2" id="todayTitle">Aujourd'hui</h1>
+        </div>
+        <div class="daynav">
+          <button type="button" class="iconbtn iconbtn--sm" data-day="-1" aria-label="Jour précédent"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4L6 9l5 5"/></svg></button>
+          <button type="button" class="btn btn--ghost btn--sm" data-day="0">Aujourd'hui</button>
+          <button type="button" class="iconbtn iconbtn--sm" data-day="1" aria-label="Jour suivant"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg></button>
+        </div>
+      </header>
+      <div class="kpis" id="todayKpis"></div>
+      <div class="occ" id="todayOcc"></div>
+      <div class="timeline" id="todayList"></div>
+    </section>
+
+    <!-- AGENDA -->
+    <section class="view" id="view-agenda" data-view="agenda">
+      <header class="view__head">
+        <div>
+          <p class="eyebrow">Agenda</p>
+          <h1 class="h2" id="agendaTitle">Septembre 2026</h1>
+        </div>
+        <div class="daynav">
+          <button type="button" class="iconbtn iconbtn--sm" data-month="-1" aria-label="Mois précédent"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4L6 9l5 5"/></svg></button>
+          <button type="button" class="btn btn--ghost btn--sm" data-month="0">Ce mois</button>
+          <button type="button" class="iconbtn iconbtn--sm" data-month="1" aria-label="Mois suivant"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5-5 5"/></svg></button>
+        </div>
+      </header>
+      <div class="agenda">
+        <div class="cal" id="cal"></div>
+        <div class="agenda__day">
+          <h2 class="h3" id="agendaDayTitle"></h2>
+          <div class="occ" id="agendaOcc"></div>
+          <div class="timeline" id="agendaList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RÉSERVATIONS -->
+    <section class="view" id="view-reservations" data-view="reservations">
+      <header class="view__head">
+        <div>
+          <p class="eyebrow">Réservations</p>
+          <h1 class="h2">Toutes les réservations</h1>
+        </div>
+      </header>
+      <div class="toolbar">
+        <div class="search"><svg viewBox="0 0 24 24"><use href="#i-search"/></svg><input type="search" id="resaSearch" placeholder="Nom, téléphone, référence…" autocomplete="off"></div>
+        <div class="chips" id="resaPeriod">
+          <button type="button" class="chip is-active" data-period="upcoming">À venir</button>
+          <button type="button" class="chip" data-period="past">Passées</button>
+          <button type="button" class="chip" data-period="all">Toutes</button>
+        </div>
+        <div class="chips" id="resaStatus">
+          <button type="button" class="chip is-active" data-status="">Tous statuts</button>
+          <button type="button" class="chip" data-status="pending">En attente</button>
+          <button type="button" class="chip" data-status="confirmed">Confirmées</button>
+          <button type="button" class="chip" data-status="seated">Installées</button>
+          <button type="button" class="chip" data-status="noshow">No-show</button>
+          <button type="button" class="chip" data-status="cancelled">Annulées</button>
+        </div>
+      </div>
+      <p class="muted" id="resaCount"></p>
+      <div class="timeline" id="resaList"></div>
+    </section>
+
+    <!-- CLIENTS -->
+    <section class="view" id="view-clients" data-view="clients">
+      <header class="view__head">
+        <div>
+          <p class="eyebrow">Clients</p>
+          <h1 class="h2">Fiches clients</h1>
+        </div>
+      </header>
+      <div class="toolbar">
+        <div class="search"><svg viewBox="0 0 24 24"><use href="#i-search"/></svg><input type="search" id="clientSearch" placeholder="Nom ou téléphone…" autocomplete="off"></div>
+        <div class="chips" id="clientSort">
+          <button type="button" class="chip is-active" data-sort="visits">Plus fidèles</button>
+          <button type="button" class="chip" data-sort="recent">Récents</button>
+          <button type="button" class="chip" data-sort="name">A → Z</button>
+        </div>
+      </div>
+      <p class="muted" id="clientCount"></p>
+      <div class="clients" id="clientList"></div>
+    </section>
+
+    <!-- STATISTIQUES -->
+    <section class="view" id="view-stats" data-view="stats">
+      <header class="view__head">
+        <div>
+          <p class="eyebrow">Statistiques</p>
+          <h1 class="h2">Activité</h1>
+        </div>
+        <div class="chips" id="statsPeriod">
+          <button type="button" class="chip" data-days="7">7 jours</button>
+          <button type="button" class="chip is-active" data-days="30">30 jours</button>
+          <button type="button" class="chip" data-days="90">90 jours</button>
+        </div>
+      </header>
+      <div class="kpis" id="statsKpis"></div>
+      <div class="charts" id="charts"></div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="Navigation mobile">
+    <a href="#today" data-view="today" class="is-active"><svg viewBox="0 0 24 24"><use href="#i-sun"/></svg><span>Service</span></a>
+    <a href="#agenda" data-view="agenda"><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg><span>Agenda</span></a>
+    <button type="button" class="tabbar__new" data-new-resa aria-label="Nouvelle réservation"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></button>
+    <a href="#reservations" data-view="reservations"><svg viewBox="0 0 24 24"><use href="#i-list"/></svg><span>Résas</span></a>
+    <a href="#clients" data-view="clients"><svg viewBox="0 0 24 24"><use href="#i-people"/></svg><span>Clients</span></a>
+    <a href="#stats" data-view="stats"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>Stats</span></a>
+  </nav>
+</div>
+
+<!-- ============ FICHE RÉSERVATION ============ -->
+<dialog class="sheet" id="resaSheet">
+  <div class="sheet__panel">
+    <div class="sheet__top">
+      <div><p class="eyebrow" id="rsRef"></p><h2 class="h3" id="rsName"></h2></div>
+      <button type="button" class="iconbtn" data-close aria-label="Fermer"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l10 10M14 4L4 14"/></svg></button>
+    </div>
+    <div class="sheet__body">
+      <div class="status-row" id="rsStatusRow"></div>
+      <form class="form" id="rsForm">
+        <input type="hidden" id="rsId">
+        <div class="form__grid">
+          <div class="input"><input id="rsDate" type="date" required><label for="rsDate">Date</label></div>
+          <div class="input"><select id="rsTime"></select><label for="rsTime">Heure</label></div>
+          <div class="input"><input id="rsGuests" type="number" min="1" max="40" inputmode="numeric" required><label for="rsGuests">Personnes</label></div>
+          <div class="input"><select id="rsPref"><option>Terrasse</option><option>Intérieur</option><option>Peu importe</option></select><label for="rsPref">Placement</label></div>
+          <div class="input"><input id="rsFirst" type="text" required placeholder=" "><label for="rsFirst">Prénom</label></div>
+          <div class="input"><input id="rsLast" type="text" required placeholder=" "><label for="rsLast">Nom</label></div>
+          <div class="input"><input id="rsPhone" type="tel" required placeholder=" "><label for="rsPhone">Téléphone</label></div>
+          <div class="input"><input id="rsEmail" type="email" placeholder=" "><label for="rsEmail">E-mail</label></div>
+          <div class="input"><select id="rsSource"><option value="phone">Téléphone</option><option value="web">Site web</option><option value="whatsapp">WhatsApp</option><option value="walkin">Sur place</option></select><label for="rsSource">Canal</label></div>
+        </div>
+        <div class="input input--area"><textarea id="rsNote" rows="2" placeholder=" "></textarea><label for="rsNote">Note / demande spéciale</label></div>
+        <p class="rs-meta" id="rsMeta"></p>
+        <div class="form__actions">
+          <button type="button" class="btn btn--ghost" id="rsClient"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-people"/></svg><span>Fiche client</span></button>
+          <button type="submit" class="btn btn--primary"><span>Enregistrer</span></button>
+        </div>
+        <button type="button" class="linkbtn linkbtn--danger" id="rsDelete">Supprimer la réservation</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+
+<!-- ============ FICHE CLIENT ============ -->
+<dialog class="sheet" id="clientSheet">
+  <div class="sheet__panel">
+    <div class="sheet__top">
+      <div class="client-head"><span class="avatar" id="csAvatar"></span><div><h2 class="h3" id="csName"></h2><p class="muted" id="csContact"></p></div></div>
+      <button type="button" class="iconbtn" data-close aria-label="Fermer"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l10 10M14 4L4 14"/></svg></button>
+    </div>
+    <div class="sheet__body">
+      <div class="kpis kpis--mini" id="csKpis"></div>
+      <div class="tags" id="csTags"></div>
+      <div class="input input--area"><textarea id="csNotes" rows="3" placeholder=" "></textarea><label for="csNotes">Notes internes (préférences, allergies…)</label></div>
+      <div class="form__actions">
+        <a class="btn btn--ghost" id="csCall" href="#"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-phone"/></svg><span>Appeler</span></a>
+        <button type="button" class="btn btn--primary" id="csSave"><span>Enregistrer</span></button>
+      </div>
+      <h3 class="h4">Historique</h3>
+      <div class="history" id="csHistory"></div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="dialog" id="confirmDialog">
+  <form method="dialog">
+    <h3 class="h3" id="cdTitle"></h3>
+    <p class="muted" id="cdText"></p>
+    <div class="dialog__actions">
+      <button class="btn btn--ghost" value="no">Annuler</button>
+      <button class="btn btn--danger" value="yes" id="cdYes">Confirmer</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.5"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 5.5a3 3 0 010 5.5M20.5 19c0-2.6-1.6-4.6-4-5.4"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18M5 9v10M19 9v10M8 9V6h8v3M5 14h14"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v8a2.5 2.5 0 01-2.5 2.5H10l-5 4V17H6.5A2.5 2.5 0 014 14.5v-8z"/></symbol>
+  </defs>
+</svg>
+
+<script src="../js/admin-data.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

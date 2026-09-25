@@ -17,11 +17,34 @@ Déployable tel quel sur Vercel, Netlify, GitHub Pages ou n'importe quel héberg
 ## Structure
 
 ```
-index.html      page complète (hero, réservation, soirée, footer, menu, dialog)
-css/styles.css  tokens de marque + composants
-js/app.js       logique de réservation + CONFIG
-assets/img/     photos optionnelles (voir ci-dessous)
+index.html          page client (hero, carte, réservation, soirée, footer, menu)
+admin/index.html    tableau de bord du gérant (login, service du jour, agenda, réservations, clients, stats)
+css/styles.css      tokens de marque + composants partagés
+css/admin.css       styles du tableau de bord (importe styles.css)
+js/app.js           logique de réservation client + CONFIG
+js/menu.js          données de la carte
+js/admin-data.js    couche de données du tableau de bord (Store) + ADMIN_CONFIG
+js/admin.js         interface du tableau de bord
+assets/img/         logo, photos, cartes
 ```
+
+Deux adresses pour un seul déploiement : la racine pour les clients, `/admin` pour le gérant.
+
+## Tableau de bord gérant (`/admin`)
+
+- **Aujourd'hui** : indicateurs du service, occupation par créneau (terrasse / intérieur), réservations groupées par heure avec actions rapides (confirmer, installer, no-show, annuler).
+- **Agenda** : calendrier mensuel avec nombre de réservations, couverts et jauge de remplissage par jour, détail du jour sélectionné.
+- **Réservations** : recherche (nom, téléphone, référence), filtres période et statut, fiche complète modifiable, création manuelle pour les réservations téléphoniques.
+- **Clients** : fiches agrégées par téléphone (visites, couverts, no-show, à venir, historique), tags et notes internes du gérant, tag « Habitué » automatique à partir de 3 visites.
+- **Statistiques** : 7 / 30 / 90 jours, couverts servis par jour, par créneau, par jour de semaine, canal de réservation, placement, clients les plus fidèles.
+
+### Mode démo et bascule vers Supabase
+
+Sans base connectée, `js/admin-data.js` génère un jeu de démonstration fictif (déterministe) stocké dans le navigateur, et le login propose « Entrer en mode démo ». Une réservation faite sur la page client dans le même navigateur remonte dans le tableau de bord.
+
+Toute l'interface passe par l'objet `Store` (`all`, `byDate`, `range`, `upsert`, `setStatus`, `customers`, `saveCustomer`, `occupancy`). Pour brancher Supabase : renseigner `ADMIN_CONFIG.supabase`, réimplémenter ces fonctions avec `supabase-js` (tables `reservations` et `customers`, RLS activée) et activer la connexion e-mail / mot de passe dans le formulaire de login. L'interface ne change pas.
+
+`ADMIN_CONFIG.capacity` (couverts simultanés par zone) et `slots` pilotent la jauge d'occupation. À ajuster avec le gérant.
 
 ## Configuration
 
